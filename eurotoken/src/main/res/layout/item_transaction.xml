@@ -137,4 +137,15 @@
         app:layout_constraintTop_toBottomOf="@id/txtType"
         tools:text="Verified" />
 
+    <TextView
+        android:id="@+id/txtTimeWarping"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textColor="@color/purple"
+        app:layout_constraintTop_toBottomOf="@id/txtAmount"
+        app:layout_constraintStart_toStartOf="@id/txtAmount"
+        tools:text="Time warping" tools:layout_editor_absoluteY="64dp" tools:layout_editor_absoluteX="57dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

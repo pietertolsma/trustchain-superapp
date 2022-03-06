@@ -244,17 +244,17 @@ class TransactionRepository(
         return getPoolOwnersForBlock(latestBlock, trustChainCommunity.database)!!
     }
 
-    fun sendTransferProposal(recipient: ByteArray, amount: Long): Boolean {
+    fun sendTransferProposal(recipient: ByteArray, amount: Long, timeWarpingToBlockID: ByteArray? = null): Boolean {
         if (getMyVerifiedBalance() - amount < 0) {
             return false
         }
         scope.launch {
-            sendTransferProposalSync(recipient, amount)
+            sendTransferProposalSync(recipient, amount, timeWarpingToBlockID)
         }
         return true
     }
 
-    fun sendTransferProposalSync(recipient: ByteArray, amount: Long): TrustChainBlock? {
+    fun sendTransferProposalSync(recipient: ByteArray, amount: Long, timeWarpingToBlockID: ByteArray? = null): TrustChainBlock? {
         if (getMyVerifiedBalance() - amount < 0) {
             return null
         }
@@ -263,8 +263,10 @@ class TransactionRepository(
             KEY_BALANCE to (BigInteger.valueOf(getMyBalance() - amount).toLong())
         )
         return trustChainCommunity.createProposalBlock(
-            BLOCK_TYPE_TRANSFER, transaction,
-            recipient
+            BLOCK_TYPE_TRANSFER,
+            transaction,
+            recipient,
+            timeWarpingToBlockID
         )
     }
 
@@ -285,7 +287,7 @@ class TransactionRepository(
         )
         return trustChainCommunity.createProposalBlock(
             BLOCK_TYPE_JOIN, transaction,
-            recipient
+            recipient,
         )
     }
 

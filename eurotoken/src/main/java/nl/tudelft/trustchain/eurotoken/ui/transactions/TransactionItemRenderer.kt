@@ -10,6 +10,7 @@ import nl.tudelft.ipv8.util.toHex
 import nl.tudelft.trustchain.common.contacts.Contact
 import nl.tudelft.trustchain.common.contacts.ContactStore
 import nl.tudelft.trustchain.common.eurotoken.*
+import nl.tudelft.trustchain.eurotoken.EuroTokenMainActivity.Companion.timeWarpingToBlockId
 import nl.tudelft.trustchain.eurotoken.R
 import java.text.SimpleDateFormat
 
@@ -96,6 +97,13 @@ class TransactionItemRenderer(
                 transactionRepository.trustChainCommunity.database
             )!!
         )
+
+        if (timeWarpingToBlockId.contentEquals(item.transaction.block.calculateHash())) {
+            txtTimeWarping.text = "Warping"
+        } else {
+            txtTimeWarping.text = ""
+        }
+
 //        txtVBalance.text = TransactionRepository.prettyAmount(transactionRepository.getVerifiedBalanceForBlock(item.transaction.block, transactionRepository.trustChainCommunity.database)!!)
     }
 

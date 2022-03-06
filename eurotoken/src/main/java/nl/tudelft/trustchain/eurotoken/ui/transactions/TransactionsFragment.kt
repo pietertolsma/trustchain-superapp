@@ -22,6 +22,7 @@ import nl.tudelft.trustchain.common.contacts.ContactStore
 import nl.tudelft.trustchain.common.eurotoken.Transaction
 import nl.tudelft.trustchain.common.eurotoken.TransactionRepository
 import nl.tudelft.trustchain.common.util.viewBinding
+import nl.tudelft.trustchain.eurotoken.EuroTokenMainActivity
 import nl.tudelft.trustchain.eurotoken.R
 import nl.tudelft.trustchain.eurotoken.community.EuroTokenCommunity
 import nl.tudelft.trustchain.eurotoken.databinding.FragmentTransactionsBinding
@@ -78,6 +79,14 @@ class TransactionsFragment : EurotokenBaseFragment(R.layout.fragment_transaction
             }
         }
 
+        fun timeTravel(transaction: Transaction) {
+            val blockHash = transaction.block.calculateHash()
+            EuroTokenMainActivity.timeWarpingToBlockId = blockHash
+            transactionRepository.trustChainCommunity
+            return Toast.makeText(requireContext(),
+                "Time warping to transaction in block with block hash: $blockHash", Toast.LENGTH_LONG).show()
+        }
+
         fun requestRollback(transaction: Transaction) {
             val key = defaultCryptoProvider.keyFromPublicBin(transaction.block.linkPublicKey)
             val peer = Peer(key)
@@ -89,23 +98,25 @@ class TransactionsFragment : EurotokenBaseFragment(R.layout.fragment_transaction
 
         fun showOptions(transaction: Transaction) {
             if (!transaction.outgoing && transaction.block.type == TransactionRepository.BLOCK_TYPE_TRANSFER) {
-                val items = arrayOf("Resend", "Pay back", "Roll back")
+                val items = arrayOf("Resend", "Pay back", "Roll back", "Time Travel")
                 AlertDialog.Builder(requireContext())
                     .setItems(items) { _, which ->
                         when (which) {
                             0 -> resendBlock(transaction)
                             1 -> payBack(transaction)
                             2 -> rollBack(transaction)
+                            3 -> timeTravel(transaction)
                         }
                     }
                     .show()
                 return
             }
-            val items = arrayOf("Resend")
+            val items = arrayOf("Resend", "Time Travel")
             AlertDialog.Builder(requireContext())
                 .setItems(items) { _, which ->
                     when (which) {
                         0 -> resendBlock(transaction)
+                        1 -> timeTravel(transaction)
                     }
                 }
                 .show()
